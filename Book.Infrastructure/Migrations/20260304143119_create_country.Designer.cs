@@ -4,6 +4,7 @@ using Books.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Books.Infrastructure.Migrations
 {
     [DbContext(typeof(LibraryDBContext))]
-    partial class LibraryDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260304143119_create_country")]
+    partial class create_country
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,33 +92,6 @@ namespace Books.Infrastructure.Migrations
                     b.HasIndex("GenreId");
 
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("Books.Domain.Entities.CityEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CountryEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("UserEntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryEntityId");
-
-                    b.HasIndex("UserEntityId");
-
-                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Books.Domain.Entities.CountryEntity", b =>
@@ -272,17 +248,6 @@ namespace Books.Infrastructure.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("Books.Domain.Entities.CityEntity", b =>
-                {
-                    b.HasOne("Books.Domain.Entities.CountryEntity", null)
-                        .WithMany("Cities")
-                        .HasForeignKey("CountryEntityId");
-
-                    b.HasOne("Books.Domain.Entities.UserEntity", null)
-                        .WithMany("Cities")
-                        .HasForeignKey("UserEntityId");
-                });
-
             modelBuilder.Entity("Books.Domain.Entities.PasswordResetTokenEntity", b =>
                 {
                     b.HasOne("Books.Domain.Entities.UserEntity", "User")
@@ -305,11 +270,6 @@ namespace Books.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Books.Domain.Entities.CountryEntity", b =>
-                {
-                    b.Navigation("Cities");
-                });
-
             modelBuilder.Entity("Books.Domain.Entities.GenreEntity", b =>
                 {
                     b.Navigation("Books");
@@ -317,8 +277,6 @@ namespace Books.Infrastructure.Migrations
 
             modelBuilder.Entity("Books.Domain.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Cities");
-
                     b.Navigation("PasswordResetTokens");
 
                     b.Navigation("RefreshTokens");

@@ -16,6 +16,8 @@ public class LibraryDBContext:DbContext
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
     public DbSet<PasswordResetTokenEntity> PasswordResetTokens { get; set; }
+    public DbSet<CountryEntity> Countries { get; set; }
+    public DbSet<CityEntity> Cities { get; set; }
     public LibraryDBContext(DbContextOptions<LibraryDBContext> options) : base(options)
     {
 

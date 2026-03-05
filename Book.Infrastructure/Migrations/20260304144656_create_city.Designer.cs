@@ -4,6 +4,7 @@ using Books.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Books.Infrastructure.Migrations
 {
     [DbContext(typeof(LibraryDBContext))]
-    partial class LibraryDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260304144656_create_city")]
+    partial class create_city
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,14 +109,9 @@ namespace Books.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CountryEntityId");
-
-                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Cities");
                 });
@@ -277,10 +275,6 @@ namespace Books.Infrastructure.Migrations
                     b.HasOne("Books.Domain.Entities.CountryEntity", null)
                         .WithMany("Cities")
                         .HasForeignKey("CountryEntityId");
-
-                    b.HasOne("Books.Domain.Entities.UserEntity", null)
-                        .WithMany("Cities")
-                        .HasForeignKey("UserEntityId");
                 });
 
             modelBuilder.Entity("Books.Domain.Entities.PasswordResetTokenEntity", b =>
@@ -317,8 +311,6 @@ namespace Books.Infrastructure.Migrations
 
             modelBuilder.Entity("Books.Domain.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Cities");
-
                     b.Navigation("PasswordResetTokens");
 
                     b.Navigation("RefreshTokens");

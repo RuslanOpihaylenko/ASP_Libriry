@@ -27,7 +27,6 @@ namespace Books.Application.Services
         //Create author
         public async Task<int?> CreateAuthorAsync(AuthorCreateDto dto)
         {
-            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
             await _cacheService.RemoveAsync("Authors");
             var author = _mapper.Map<AuthorEntity>(dto);
             return await _repository.AddAuthorAsync(author);//, dto.Books);
@@ -67,7 +66,6 @@ namespace Books.Application.Services
         //Update author
         public async Task<AuthorReadDto?> UpdeteAuthorAsync(int id, AuthorUpdateDto dto)
         {
-            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
             await _cacheService.RemoveAsync("Authors");
             var entity = _mapper.Map<AuthorEntity>(dto);
             var update = await _repository.UpdeteAuthorById(id, entity);
@@ -79,7 +77,6 @@ namespace Books.Application.Services
         //Delete by id
         public async Task<bool> DeleteAuthorAsync(int id)
         {
-            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
             await _cacheService.RemoveAsync("Authors");
             var author = await _repository.GetAuthorByIdAsync(id);
 
@@ -93,7 +90,6 @@ namespace Books.Application.Services
         //Delete all author
         public async Task<int> DeleteAllAuthorsAsync()
         {
-            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
             await _cacheService.RemoveAsync("Authors");
             var deleted = await _repository.DeleteAllAuthorsAsync();
             return deleted.Count;

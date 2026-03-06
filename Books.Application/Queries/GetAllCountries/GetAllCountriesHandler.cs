@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Books.Application.DTOs.BookDTOs;
 using Books.Application.DTOs.CountryDTOs;
 using Books.Application.Interfaces.Repositories;
+using Books.Application.Interfaces.Services;
 using Books.Application.Queries.GetAllCountries;
 using MediatR;
 using System;
@@ -16,16 +18,23 @@ namespace Books.Application.Queries.GetAllCountries
     {
         private readonly ICountryRepository _repository;
         private readonly IMapper _mapper;
-        public GetAllCountriesHandler(ICountryRepository repository, IMapper mapper)
+        private readonly ICachingService _cacheService;
+        public GetAllCountriesHandler(ICountryRepository repository, IMapper mapper, ICachingService cacheService)
         {
             _repository = repository;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
         public async Task<ICollection<CountryReadDto>> Handle(GetAllCountriesQuery request, CancellationToken cancellationToken)
         {
-            var entities = await _repository.GetAllContriesAsync();
-            return _mapper.Map<ICollection<CountryReadDto>>(entities);
-
+            var cache = await _cacheService.GetAsync<ICollection<CountryReadDto>>("Countries");
+            if (cache == null)
+            {
+                var entities = await _repository.GetAllContriesAsync();
+                cache = _mapper.Map<ICollection<CountryReadDto>>(entities);
+                await _cacheService.SetAsync("Countries", cache, null);
+            }
+            return cache;
         }
     }
 }

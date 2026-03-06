@@ -15,15 +15,16 @@ public class BookService : IBookService
     private readonly IBookRepository _repository;
 
     private readonly IMapper _mapper;
+    private readonly ICachingService _cacheService;
 
-    public BookService(IBookRepository repository, IMapper mapper)
+    public BookService(IBookRepository repository, IMapper mapper, ICachingService cacheService)
 
     {
 
         _repository = repository;
 
         _mapper = mapper;
-
+        _cacheService = cacheService;
     }
 
     // Створення книги
@@ -31,7 +32,7 @@ public class BookService : IBookService
     public async Task<int?> CreateBookAsync(BookCreateDto dto)
 
     {
-
+        await _cacheService.RemoveAsync("Books");
         var book = _mapper.Map<BookEntity>(dto);
 
         return await _repository.AddBookAsync(book, dto.AuthorsId);
@@ -57,12 +58,15 @@ public class BookService : IBookService
     // Отримати всі книги
 
     public async Task<ICollection<BookReadDto>> GetAllBooksAsync()
-
     {
-        var books = await _repository.GetAllBooksAsync();
-
-        return _mapper.Map<ICollection<BookReadDto>>(books);
-
+        var cache = await _cacheService.GetAsync<ICollection<BookReadDto>>("Books");
+        if (cache == null)
+        {
+            var books = await _repository.GetAllBooksAsync();
+            cache = _mapper.Map<ICollection<BookReadDto>>(books);
+            await _cacheService.SetAsync("Books", cache, null);
+        }
+        return cache;
     }
     //Get chunk
     public async Task<ICollection<BookReadDto>> GetChunkAsync(int pagenum, int limit)
@@ -80,6 +84,7 @@ public class BookService : IBookService
     //Update book
     public async Task<BookReadDto?> UpdeteBookAsync(int id, BookUpdateDto dto)
     {
+        await _cacheService.RemoveAsync("Books");
         var entity = _mapper.Map<BookEntity>(dto);
         var update = await _repository.UpdeteBookById(id, entity);
 
@@ -90,6 +95,7 @@ public class BookService : IBookService
     //Delete by id
     public async Task<bool> DeleteBookAsync(int id)
     {
+        await _cacheService.RemoveAsync("Books");
         var book = await _repository.GetBookByIdAsync(id);
 
         if (book == null)
@@ -102,6 +108,7 @@ public class BookService : IBookService
     //Delete all book
     public async Task<int> DeleteAllBooksAsync()
     {
+        await _cacheService.RemoveAsync("Books");
         var deleted = await _repository.DeleteAllBooksAsync();
         return deleted.Count;
     }

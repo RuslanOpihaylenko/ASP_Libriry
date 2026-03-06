@@ -16,7 +16,8 @@ namespace Books.Application.Mapping
         public CountryProfile()
         {
             CreateMap<CountryReadDto, CountryEntity>()
-                .ForMember(dest => dest.Cities, opt => opt.Ignore()); ;
+                .ForMember(dest => dest.Cities, opt => opt.Ignore());
+            CreateMap<CountryEntity, CountryReadDto>().ForMember(dest => dest.CitysId, opt => opt.Ignore());
         }
     }
 }

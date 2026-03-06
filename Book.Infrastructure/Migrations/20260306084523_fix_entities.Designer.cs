@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Books.Infrastructure.Migrations
 {
     [DbContext(typeof(LibraryDBContext))]
-    [Migration("20260304151310_update_entities")]
-    partial class update_entities
+    [Migration("20260306084523_fix_entities")]
+    partial class fix_entities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,14 +109,9 @@ namespace Books.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CountryEntityId");
-
-                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Cities");
                 });
@@ -224,6 +219,9 @@ namespace Books.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CityEntityId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -242,6 +240,8 @@ namespace Books.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityEntityId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -280,10 +280,6 @@ namespace Books.Infrastructure.Migrations
                     b.HasOne("Books.Domain.Entities.CountryEntity", null)
                         .WithMany("Cities")
                         .HasForeignKey("CountryEntityId");
-
-                    b.HasOne("Books.Domain.Entities.UserEntity", null)
-                        .WithMany("Cities")
-                        .HasForeignKey("UserEntityId");
                 });
 
             modelBuilder.Entity("Books.Domain.Entities.PasswordResetTokenEntity", b =>
@@ -308,6 +304,22 @@ namespace Books.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Books.Domain.Entities.UserEntity", b =>
+                {
+                    b.HasOne("Books.Domain.Entities.CityEntity", "CityEntity")
+                        .WithMany("UserEntities")
+                        .HasForeignKey("CityEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CityEntity");
+                });
+
+            modelBuilder.Entity("Books.Domain.Entities.CityEntity", b =>
+                {
+                    b.Navigation("UserEntities");
+                });
+
             modelBuilder.Entity("Books.Domain.Entities.CountryEntity", b =>
                 {
                     b.Navigation("Cities");
@@ -320,8 +332,6 @@ namespace Books.Infrastructure.Migrations
 
             modelBuilder.Entity("Books.Domain.Entities.UserEntity", b =>
                 {
-                    b.Navigation("Cities");
-
                     b.Navigation("PasswordResetTokens");
 
                     b.Navigation("RefreshTokens");

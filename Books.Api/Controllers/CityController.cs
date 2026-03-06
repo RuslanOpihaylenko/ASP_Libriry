@@ -16,7 +16,7 @@ namespace Books.Api.Controllers
     public class CityController(IMediator _mediator) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllities()
+        public async Task<IActionResult> GetAllCities()
         {
             var result = await _mediator.Send(new GetAllCitiesQuery());
             return Ok(result);

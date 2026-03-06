@@ -10,5 +10,6 @@ namespace Books.Domain.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        public ICollection<UserEntity>? UserEntities { get; set; }
     }
 }

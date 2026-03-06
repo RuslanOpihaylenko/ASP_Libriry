@@ -4,6 +4,7 @@ using Books.Application.DTOs.GenreDTOs;
 using Books.Application.Interfaces.Repositories;
 using Books.Application.Interfaces.Services;
 using Books.Domain.Entities;
+using System.Net.Http.Headers;
 
 namespace Books.Application.Services
 {
@@ -12,22 +13,23 @@ namespace Books.Application.Services
         private readonly IAuthorRepository _repository;
 
         private readonly IMapper _mapper;
+        private readonly ICachingService _cacheService;
 
-        public AuthorService(IAuthorRepository repository, IMapper mapper)
+        public AuthorService(IAuthorRepository repository, IMapper mapper, ICachingService cacheService)
 
         {
 
             _repository = repository;
 
             _mapper = mapper;
-
+            _cacheService = cacheService;
         }
         //Create author
         public async Task<int?> CreateAuthorAsync(AuthorCreateDto dto)
-
         {
+            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
+            await _cacheService.RemoveAsync("Authors");
             var author = _mapper.Map<AuthorEntity>(dto);
-
             return await _repository.AddAuthorAsync(author);//, dto.Books);
         }
         //Get author by id
@@ -46,12 +48,15 @@ namespace Books.Application.Services
         }
         //Get all authors
         public async Task<ICollection<AuthorReadDto>> GetAllAuthorsAsync()
-
         {
-            var authors = await _repository.GetAllAuthorAsync();
-
-            return _mapper.Map<ICollection<AuthorReadDto>>(authors);
-
+            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
+            if (cache == null)
+            {
+                var authors = await _repository.GetAllAuthorAsync();
+                cache = _mapper.Map<ICollection<AuthorReadDto>>(authors);
+                await _cacheService.SetAsync("Authors", cache, null);
+            }
+            return cache;
         }
         //Search authors
         public async Task<ICollection<AuthorReadDto>> SearchAuthorsAsync(string name)
@@ -62,6 +67,8 @@ namespace Books.Application.Services
         //Update author
         public async Task<AuthorReadDto?> UpdeteAuthorAsync(int id, AuthorUpdateDto dto)
         {
+            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
+            await _cacheService.RemoveAsync("Authors");
             var entity = _mapper.Map<AuthorEntity>(dto);
             var update = await _repository.UpdeteAuthorById(id, entity);
 
@@ -72,6 +79,8 @@ namespace Books.Application.Services
         //Delete by id
         public async Task<bool> DeleteAuthorAsync(int id)
         {
+            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
+            await _cacheService.RemoveAsync("Authors");
             var author = await _repository.GetAuthorByIdAsync(id);
 
             if (author == null)
@@ -84,6 +93,8 @@ namespace Books.Application.Services
         //Delete all author
         public async Task<int> DeleteAllAuthorsAsync()
         {
+            var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
+            await _cacheService.RemoveAsync("Authors");
             var deleted = await _repository.DeleteAllAuthorsAsync();
             return deleted.Count;
         }

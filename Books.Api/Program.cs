@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Runtime;
 using System.Text;
 namespace Books.Api
 {
@@ -36,6 +37,8 @@ namespace Books.Api
 
             builder.Services.Configure<JwtSettings>(
                 configuration.GetSection("Jwt"));
+            builder.Services.Configure<CacheTimeSet>(
+                builder.Configuration.GetSection("CacheTimeSet"));
             builder.Services.AddDbContext<LibraryDBContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -53,6 +56,8 @@ namespace Books.Api
             builder.Services.AddAutoMapper(_ => { }, typeof(GenreProfile).Assembly);
             builder.Services.AddAutoMapper(_ => { }, typeof(UserProfile).Assembly);
             builder.Services.AddAutoMapper(_ => { }, typeof(CountryProfile).Assembly);
+            builder.Services.AddAutoMapper(_ => { }, typeof(CityProfile).Assembly);
+            builder.Services.AddMemoryCache();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -74,6 +79,7 @@ namespace Books.Api
             builder.Services.AddScoped<ICityRepository, CityRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<ICachingService, MemoryCachingService>();
             builder.Services.AddScoped<IHashHelper, HashHelper>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

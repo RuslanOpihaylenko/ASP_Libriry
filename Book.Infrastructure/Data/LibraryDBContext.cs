@@ -1,4 +1,5 @@
 ﻿using Books.Domain.Entities;
+using Books.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,9 @@ public class LibraryDBContext:DbContext
                 .Property(b => b.CreatedAt)
                 .HasDefaultValueSql("SYSDATETIME()");
         }
-
+        modelBuilder.ApplyConfiguration(new BookConfiguration());
+        modelBuilder.ApplyConfiguration(new PasswordResetTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
     }
 }

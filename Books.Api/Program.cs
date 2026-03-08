@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.Runtime;
 using System.Text;
 namespace Books.Api
@@ -57,7 +58,6 @@ namespace Books.Api
             builder.Services.AddAutoMapper(_ => { }, typeof(UserProfile).Assembly);
             builder.Services.AddAutoMapper(_ => { }, typeof(CountryProfile).Assembly);
             builder.Services.AddAutoMapper(_ => { }, typeof(CityProfile).Assembly);
-            builder.Services.AddMemoryCache();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -79,7 +79,23 @@ namespace Books.Api
             builder.Services.AddScoped<ICityRepository, CityRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
-            builder.Services.AddScoped<ICachingService, MemoryCachingService>();
+
+            var cacheProvider = builder.Configuration["CacheSettings:Provider"];
+            if (cacheProvider == "Memory")
+            {
+                builder.Services.AddMemoryCache();
+                builder.Services.AddScoped<ICachingService, MemoryCachingService>();
+            }
+            else if (cacheProvider == "Redis")
+            {
+                //==================Redis============================
+                builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+                {
+                    var config = builder.Configuration.GetConnectionString("Redis");
+                    return ConnectionMultiplexer.Connect(config);
+                });
+                builder.Services.AddScoped<ICachingService, RedisCachingService>();
+            }
             builder.Services.AddScoped<IHashHelper, HashHelper>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -119,7 +135,6 @@ namespace Books.Api
                 }
             });
             });
-
             // ================= Authentication =================
             builder.Services.AddAuthentication(options =>
             {

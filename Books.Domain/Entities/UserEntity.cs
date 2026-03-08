@@ -26,7 +26,7 @@ namespace Books.Domain.Entities
         public ICollection<RefreshTokenEntity> RefreshTokens { get; set; } = new List<RefreshTokenEntity>();
         public ICollection<PasswordResetTokenEntity> PasswordResetTokens { get; set; }
     = new List<PasswordResetTokenEntity>();
-        public int CityEntityId { get; set; }
+        public int? CityEntityId { get; set; } 
         public CityEntity? CityEntity { get; set; }
     }
 }

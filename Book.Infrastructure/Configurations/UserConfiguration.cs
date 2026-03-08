@@ -33,6 +33,15 @@ namespace Books.Infrastructure.Configurations
             builder
                 .Property(u => u.CreatedAt)
                 .HasDefaultValueSql("SYSDATETIME()");
+
+            builder.Property(x => x.Role)
+                .HasConversion<int>()
+                .IsRequired();
+
+            builder.HasCheckConstraint(
+                "CK_User_Role",
+                "[Role] IN (0,1,2)"
+                );
         }
     }
 }

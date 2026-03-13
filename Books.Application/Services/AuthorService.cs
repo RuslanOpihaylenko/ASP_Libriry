@@ -25,11 +25,11 @@ namespace Books.Application.Services
             _cacheService = cacheService;
         }
         //Create author
-        public async Task<int?> CreateAuthorAsync(AuthorCreateDto dto)
+        public async Task<int?> CreateAuthorAsync(AuthorCreateDto dto, CancellationToken cancellationToken)
         {
             await _cacheService.RemoveAsync("Authors");
             var author = _mapper.Map<AuthorEntity>(dto);
-            return await _repository.AddAuthorAsync(author);//, dto.Books);
+            return await _repository.AddAuthorAsync(author, cancellationToken);//, dto.Books);
         }
         //Get author by id
         public async Task<AuthorReadDto?> GetAuthorByIdAsync(int id)
@@ -46,12 +46,12 @@ namespace Books.Application.Services
 
         }
         //Get all authors
-        public async Task<ICollection<AuthorReadDto>> GetAllAuthorsAsync()
+        public async Task<ICollection<AuthorReadDto>> GetAllAuthorsAsync(CancellationToken cancellationToken)
         {
             var cache = await _cacheService.GetAsync<ICollection<AuthorReadDto>>("Authors");
             if (cache == null)
             {
-                var authors = await _repository.GetAllAuthorAsync();
+                var authors = await _repository.GetAllAuthorAsync(cancellationToken);
                 cache = _mapper.Map<ICollection<AuthorReadDto>>(authors);
                 await _cacheService.SetAsync("Authors", cache, null);
             }

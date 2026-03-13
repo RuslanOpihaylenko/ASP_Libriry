@@ -13,9 +13,9 @@ namespace Books.Application.Interfaces.Repositories
         /// Get authors from BD
         /// </summary>
         /// <returns></returns>
-        Task<ICollection<AuthorEntity>> GetAllAuthorAsync();
+        Task<ICollection<AuthorEntity>> GetAllAuthorAsync(CancellationToken cancellationToken);
         Task<AuthorEntity> GetAuthorByIdAsync(int id);
-        Task<int>? AddAuthorAsync(AuthorEntity author);//, ICollection<int>? booksId);
+        Task<int>? AddAuthorAsync(AuthorEntity author, CancellationToken cancellationToken);//, ICollection<int>? booksId);
         Task<AuthorEntity> UpdeteAuthorById(int id, AuthorEntity updateAuthor);
         Task<int?> DeleteAuthorAsync(AuthorEntity author);
         Task<ICollection<AuthorEntity>> DeleteAllAuthorsAsync();

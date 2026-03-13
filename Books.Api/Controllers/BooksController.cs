@@ -2,6 +2,7 @@
 using Books.Application.DTOs.BookDTOs;
 using Books.Application.Interfaces.Services;
 using Books.Application.Services;
+using Books.Application.Validators;
 using Books.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace Books.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BooksController(IBookService _bookService, IWebHostEnvironment _env) : ControllerBase
+    public class BooksController(IBookService _bookService, IWebHostEnvironment _env, IQueueService _queueService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -26,6 +27,8 @@ namespace Books.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBook([FromBody] BookCreateDto bookDto)
         {
+
+            await _queueService.PublishAsync("Books", bookDto);
             int? id = await _bookService.CreateBookAsync(bookDto);
             if (id != null)
             {

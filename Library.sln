@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35913.81 d17.13
+VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.Domain", "Books.Domain\Books.Domain.csproj", "{82CB5981-D1DC-4D94-94B0-17A69F74EB7C}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.Application", "Books.Application\Books.Application.csproj", "{412F9741-5622-4810-ACA6-D688EC9C0591}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.Infrastructure", "Book.Infrastructure\Books.Infrastructure.csproj", "{3AE53846-9C96-402E-A04F-6F83F178C162}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticsService", "StatisticService\StatisticsService.csproj", "{C333FAEB-ACAB-4E34-8755-FF12C2D62A49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3AE53846-9C96-402E-A04F-6F83F178C162}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AE53846-9C96-402E-A04F-6F83F178C162}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AE53846-9C96-402E-A04F-6F83F178C162}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C333FAEB-ACAB-4E34-8755-FF12C2D62A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C333FAEB-ACAB-4E34-8755-FF12C2D62A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C333FAEB-ACAB-4E34-8755-FF12C2D62A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C333FAEB-ACAB-4E34-8755-FF12C2D62A49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

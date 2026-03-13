@@ -13,7 +13,8 @@ namespace Books.Application.DTOs.BookDTOs
         public string Title { get; set; } = string.Empty;
         public int Year { get; set; }
         public ICollection<int>? AuthorsId { get; set; }
-        public int GenreId { get; set; }
+        public int GenreId { get; set; }    
+        public double Price { get; set; }
         public string? ImageUrl { get; set; }
     }
 }

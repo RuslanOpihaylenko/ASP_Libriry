@@ -12,6 +12,7 @@ namespace Books.Application.DTOs.BookDTOs
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int Year { get; set; }
+        public double Price { get; set; }
         public int GenreId { get; set; }
         public ICollection<int>? AuthorsId { get; set; }
 
@@ -23,6 +24,7 @@ namespace Books.Application.DTOs.BookDTOs
             Id = book.Id;
             Title = book.Title;
             Year = book.Year;
+            Price = book.Price;
             AuthorsId = book.Authors == null ? [] : book.Authors.Select(author => author.Id).ToList();
             GenreId = book.GenreId;
         }

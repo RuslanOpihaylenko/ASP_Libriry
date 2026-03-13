@@ -24,12 +24,12 @@ namespace Books.Infrastructure.Repositories
         //        throw new Exception("Some books not found");
         //    return books;
         //}
-        public async Task<int>? AddAuthorAsync(AuthorEntity author) //ICollection<int>? booksId)
+        public async Task<int>? AddAuthorAsync(AuthorEntity author, CancellationToken cancellationToken) //ICollection<int>? booksId)
         {
             //if (booksId != null)
             //    author.Books = await GetBooksAsync(booksId);
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+            _context.Authors.AddAsync(author, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
             return author.Id;
         }
 
@@ -51,7 +51,7 @@ namespace Books.Infrastructure.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<AuthorEntity>> GetAllAuthorAsync()
+        public async Task<ICollection<AuthorEntity>> GetAllAuthorAsync(CancellationToken cancellationToken)
         {
             return await _context.Authors
                 .Include(b => b.Books)

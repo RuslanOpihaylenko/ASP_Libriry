@@ -5,6 +5,7 @@ using Books.Application.Interfaces.Services;
 using Books.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Books.Api.Controllers
 {
@@ -13,9 +14,9 @@ namespace Books.Api.Controllers
     public class AuthorsController(IAuthorService _authorService):ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var authors = await _authorService.GetAllAuthorsAsync();
+            var authors = await _authorService.GetAllAuthorsAsync(cancellationToken);
             return Ok(authors);
         }
         [HttpGet("{id}")]
@@ -24,11 +25,11 @@ namespace Books.Api.Controllers
             var author = await _authorService.GetAuthorByIdAsync(id);
             return Ok(author);
         }
-        [Authorize]
+        //[Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddAuthor([FromBody] AuthorCreateDto authorDto)
+        public async Task<IActionResult> AddAuthor([FromBody] AuthorCreateDto authorDto, CancellationToken cancellationToken)
         {
-            int? id = await _authorService.CreateAuthorAsync(authorDto);
+            int? id = await _authorService.CreateAuthorAsync(authorDto, cancellationToken);
             if (id != null)
             {
                 return CreatedAtAction(nameof(GetAuthorById), new { id }, id);

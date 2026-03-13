@@ -21,6 +21,9 @@ using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using System.Runtime;
 using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Books.Application.Validators;
 namespace Books.Api
 {
     public class Program
@@ -44,6 +47,10 @@ namespace Books.Api
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.Configure<RabbitMqSettings>(
+                builder.Configuration.GetSection("RabbitMq")
+            );
+
             //  builder.Services.AddDbContext<LibraryDBContext>(options =>
             //  options.UseMySql(
             //  configuration.GetConnectionString("ConnectionToMySql"),
@@ -79,6 +86,9 @@ namespace Books.Api
             builder.Services.AddScoped<ICityRepository, CityRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IQueueService, RabbitMqService>();
+            builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
+            builder.Services.AddFluentValidationAutoValidation();
 
             var cacheProvider = builder.Configuration["CacheSettings:Provider"];
             if (cacheProvider == "Memory")

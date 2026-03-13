@@ -16,7 +16,7 @@ namespace Books.Application.Interfaces.Services
         /// </summary>
         /// <param name="dto">DTO for author creating</param>
         /// <returns>Id for new author</returns>
-        Task<int?> CreateAuthorAsync(AuthorCreateDto dto);
+        Task<int?> CreateAuthorAsync(AuthorCreateDto dto, CancellationToken cancellationToken);
         /// <summary>
         /// Get author by id
         /// </summary>
@@ -27,7 +27,7 @@ namespace Books.Application.Interfaces.Services
         /// Return all authors
         /// </summary>
         /// <returns>Колекція AuthorReadDto</returns>
-        Task<ICollection<AuthorReadDto>> GetAllAuthorsAsync();
+        Task<ICollection<AuthorReadDto>> GetAllAuthorsAsync(CancellationToken cancellationToken);
         /// <summary>
         /// Search authors
         /// </summary>

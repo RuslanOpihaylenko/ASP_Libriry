@@ -16,7 +16,6 @@ public class BookService : IBookService
 
     private readonly IMapper _mapper;
     private readonly ICachingService _cacheService;
-
     public BookService(IBookRepository repository, IMapper mapper, ICachingService cacheService)
 
     {
@@ -34,7 +33,6 @@ public class BookService : IBookService
     {
         await _cacheService.RemoveAsync("Books");
         var book = _mapper.Map<BookEntity>(dto);
-
         return await _repository.AddBookAsync(book, dto.AuthorsId);
 
     }

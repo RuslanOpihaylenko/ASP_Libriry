@@ -24,6 +24,7 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Books.Application.Validators;
+using Books.Api.ExceptionHendlers;
 namespace Books.Api
 {
     public class Program
@@ -89,6 +90,10 @@ namespace Books.Api
             builder.Services.AddScoped<IQueueService, RabbitMqService>();
             builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
             builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+            
 
             var cacheProvider = builder.Configuration["CacheSettings:Provider"];
             if (cacheProvider == "Memory")
@@ -173,8 +178,9 @@ namespace Books.Api
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
+            app.UseExceptionHandler();
             app.UseCors("AllowAll");
-
+          
             // ================= Middleware =================
             if (app.Environment.IsDevelopment())
             {

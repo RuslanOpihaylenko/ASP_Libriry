@@ -20,5 +20,15 @@ namespace Books.Api.Controllers
         {
             return Ok();
         }
+        [HttpGet("{id}")]
+        public IActionResult GetById([FromRoute] int id)
+        {
+            if (id > 5)
+            {
+                return Ok();
+            }
+            throw new Exception("fail");
+        }
     }
 }
+

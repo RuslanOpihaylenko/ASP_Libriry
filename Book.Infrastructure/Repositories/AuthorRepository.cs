@@ -60,7 +60,11 @@ namespace Books.Infrastructure.Repositories
 
         public async Task<AuthorEntity> GetAuthorByIdAsync(int id)
         {
-            return await _context.Authors.Include(b => b.Books).FirstOrDefaultAsync(b => b.Id == id);
+            if (id < 5)
+            {
+                return await _context.Authors.Include(b => b.Books).FirstOrDefaultAsync(b => b.Id == id);
+            }
+            throw new Exception("fail");
         }
 
         public async Task<AuthorEntity> UpdeteAuthorById(int id, AuthorEntity updateAuthor)

@@ -42,15 +42,17 @@ public class BookService : IBookService
     public async Task<BookReadDto?> GetBookByIdAsync(int id)
 
     {
+        if (id < 5)
+        {
+            var book = await _repository.GetBookByIdAsync(id);
 
-        var book = await _repository.GetBookByIdAsync(id);
+            if (book == null) return null;
 
-        if (book == null) return null;
+            var dto = _mapper.Map<BookReadDto>(book);
 
-        var dto = _mapper.Map<BookReadDto>(book);
-
-        return dto;
-
+            return dto;
+        }
+        throw new Exception("fail");
     }
 
     // Отримати всі книги

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Books.Tests
 {
-    public class BookTest
+    public class CalculatorTest
     {
         private LibraryDBContext GetContext()
         {
